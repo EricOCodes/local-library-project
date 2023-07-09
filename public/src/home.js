@@ -17,7 +17,8 @@ function getBooksBorrowedCount(books) {
 }
 
 function topFive(array) {
-  return array.slice(0, 5)
+  const results = array.filter((entry) => entry.count >= array[5].count)
+  return results.slice(0, 5);
 }
 
 function addToPopBooks(popBooks, book) {
