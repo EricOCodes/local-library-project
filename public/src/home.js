@@ -10,16 +10,22 @@ function getBooksBorrowedCount(books) {
   let notReturned = [];
   for (let i = 0; i < books.length; i++) {
     const book = books[i];
-    const bookNotReturned = book.borrows.some((book) => book.returned === false);
-    if (bookNotReturned === true) {
-      notReturned = notReturned.concat(book);
-    }
+    const bookNotReturned = book.borrows.filter((borrow) => borrow.returned === false);
+    notReturned = notReturned.concat(bookNotReturned)
   }
   return notReturned.length;
 }
 
 function topFive(array) {
   return array.slice(0, 5)
+}
+
+function addToPopBooks(popBooks, book) {
+  const bookEntry = {};
+  bookEntry.name = book.title;
+  bookEntry.count = book.count;
+  popBooks.push(bookEntry);
+  return popBooks;
 }
 
 function getMostCommonGenres(books) {
@@ -54,11 +60,7 @@ function getMostPopularBooks(books) {
   books.sort((bookA, bookB) => bookA.count > bookB.count ? -1 : 1)
   let popBooks = [];
   for (let j = 0; j < books.length; j++) {
-    const book = books[j];
-    const bookEntry = {};
-    bookEntry.name = book.title;
-    bookEntry.count = book.count;
-    popBooks = popBooks.concat(bookEntry);
+    popBooks = addToPopBooks(popBooks, books[j])
   }
   const results = topFive(popBooks);
   return results;
@@ -79,14 +81,12 @@ function getMostPopularAuthors(books, authors) {
     author.count = tally;
   }
   authors.sort((authorA, authorB) => authorA.count > authorB.count ? -1 : 1);
-  let popAuthors = [];
-  for (let j = 0; j < authors.length; j++) {
-    const author = authors[j];
+  let popAuthors = authors.map((author) => {
     const authorEntry = {};
     authorEntry.name = `${author.name.first} ${author.name.last}`;
     authorEntry.count = author.count;
-    popAuthors = popAuthors.concat(authorEntry);
-  }
+    return authorEntry;
+  });
   const results = topFive(popAuthors);
   return results;
 }
