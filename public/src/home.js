@@ -30,23 +30,18 @@ function addToPopBooks(popBooks, book) {
 
 function getMostCommonGenres(books) {
   books.sort((bookA, bookB) => bookA.genre < bookB.genre ? -1 : 1);
-  let popGenres = [];
-  let genreName = '';
-  let tally = 1;
-  for (let i = 1; i < books.length; i++) {
-    const book = books[i];
-    genreName = books[i - 1].genre;
-    if (book.genre === books[i - 1].genre) {
-      tally  += 1;
-    } else {
-      const genreEntry = {};
-      genreEntry.name = genreName;
-      genreEntry.count = tally;
-      popGenres = popGenres.concat(genreEntry);
-      genreName = '';
-      tally = 1;
+  const popGenres = books.reduce((popGenres, book) => {
+    let popGenre = popGenres.find((popGenre) => popGenre.name === book.genre);
+    if (!popGenre) {
+      popGenre = {
+        name: book.genre,
+        count: 0
+      };
+      popGenres.push(popGenre);
     }
-  }
+    popGenre.count += 1;
+    return popGenres;
+  }, [])
   popGenres.sort((bookA, bookB) => bookA.count > bookB.count ? -1 : 1);
   const results = topFive(popGenres);
   return results;
